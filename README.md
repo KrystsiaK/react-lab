@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Diary Fullstack Lab
 
-## Getting Started
+Тестовый fullstack-проект с микрофронтендом:
 
-First, run the development server:
+- `apps/api`: NestJS + Prisma + PostgreSQL + JWT auth
+- `apps/web`: основной Next.js frontend (регистрация, личный дневник)
+- `apps/feed`: отдельный Next.js микрофронтенд с общей лентой публикаций
+- `packages/shared`: общие TypeScript-типы
+
+## Быстрый старт
+
+1. Установить зависимости:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Поднять PostgreSQL:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm db:up
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Скопировать env-файлы:
 
-## Learn More
+```bash
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
+cp apps/feed/.env.example apps/feed/.env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Сгенерировать Prisma Client и накатить миграцию:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm --filter @diary/api prisma:generate
+pnpm --filter @diary/api prisma:migrate
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Запустить все сервисы:
 
-## Deploy on Vercel
+```bash
+pnpm dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Приложения будут доступны:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Web: http://localhost:3000
+- Feed microfrontend: http://localhost:3002
+- API: http://localhost:4000
+
+## Основные сценарии
+
+- Регистрация и логин пользователя
+- Создание личных записей (`diary` / `note` / `article`)
+- Публикация записей в общий фид
+- Просмотр общего фида через отдельный микрофронтенд (iframe в web)
